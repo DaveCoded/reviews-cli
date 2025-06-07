@@ -9,7 +9,7 @@
   "license": "ISC",
   "description": "",
   "bin": {
-    "my-node-cli": "./index.js"
+    "reviews": "./index.js"
   },
   "type": "module",
   "devDependencies": {
