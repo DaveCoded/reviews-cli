@@ -1,11 +1,12 @@
 #! /usr/bin/env node
 
 import { Octokit } from "@octokit/rest";
-import { configure, list } from "./src/commands/index.js";
+import { assign, configure, list } from "./src/commands/index.js";
 import { validateConfig, validateCommand } from "./src/lib/index.js";
 import { getConfig } from "./src/utils/getConfig.js";
 
 const commands = {
+  assign,
   configure,
   list,
 };

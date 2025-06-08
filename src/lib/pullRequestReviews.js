@@ -1,5 +1,8 @@
+import { getMembers } from "./members.js";
+import { getPullRequests } from "./pullRequests.js";
+
 // TODO: get owner and repo from config
-export async function getReviewsByPullRequest(octokit, pullNumber) {
+async function getReviewsByPullRequest(octokit, pullNumber) {
   const { data: reviews } = await octokit.pulls.listReviews({
     owner: "nplan-io",
     repo: "core",
@@ -7,6 +10,15 @@ export async function getReviewsByPullRequest(octokit, pullNumber) {
     per_page: 100,
   });
   return reviews;
+}
+
+export async function getAllReviewsByPullRequests(octokit, prs) {
+  return await Promise.all(
+    prs.map(async (pr) => {
+      const reviews = await getReviewsByPullRequest(octokit, pr.number);
+      return { pr, reviews };
+    })
+  );
 }
 
 export function calculateOpenReviewRequests({ orgMembers, prReviewsList }) {
@@ -38,6 +50,19 @@ export function calculateOpenReviewRequests({ orgMembers, prReviewsList }) {
       }
     }
   }
+
+  return reviewCounts;
+}
+
+export async function getOpenReviewRequestsForMembers(octokit) {
+  const orgMembers = await getMembers(octokit);
+  const { data: prs } = await getPullRequests(octokit);
+  const prReviewsList = await getAllReviewsByPullRequests(octokit, prs);
+
+  const reviewCounts = calculateOpenReviewRequests({
+    orgMembers,
+    prReviewsList,
+  });
 
   return reviewCounts;
 }
