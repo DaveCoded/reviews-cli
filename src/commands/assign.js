@@ -1,9 +1,12 @@
+import { select, checkbox } from "@inquirer/prompts";
 import {
+  addReviewersToPullRequest,
+  removeReviewersFromPullRequest,
+  getMe,
   getOpenReviewRequestsForMembers,
   getPullRequests,
 } from "../lib/index.js";
-import { getCurrentBranch } from "../utils/index.js";
-import { select, checkbox } from "@inquirer/prompts";
+import { buildHead, getCurrentBranch } from "../utils/index.js";
 
 // TODO: refactor
 // TODO: error handling
@@ -11,9 +14,8 @@ import { select, checkbox } from "@inquirer/prompts";
 export async function assign(octokit) {
   const branch = getCurrentBranch();
 
-  // TODO: get owner from config
   const { data: prs } = await getPullRequests(octokit, {
-    head: `nplan-io:${branch}`,
+    head: buildHead(branch),
   });
 
   if (prs.length === 0) {
@@ -51,20 +53,21 @@ export async function assign(octokit) {
   // Currently requested reviewers for the selected PR
   const currentReviewers = pr.requested_reviewers.map((r) => r.login);
 
+  const me = await getMe(octokit);
+
   // Prepare choices for the checkbox prompt
-  const reviewerChoices = orgMembers.map((login) => ({
-    name: `${login} (${reviewCounts[login]} open requests)`,
-    // ? Will this need to be an id instead of username?
-    value: login,
-    checked: currentReviewers.includes(login),
-  }));
+  const reviewerChoices = orgMembers
+    .filter((login) => login !== me.login) // Exclude the current user
+    .map((login) => ({
+      name: `${login} (${reviewCounts[login]} open requests)`,
+      value: login,
+      checked: currentReviewers.includes(login),
+    }));
 
   const selectedReviewers = await checkbox({
     message: "Select reviewers to request:",
     choices: reviewerChoices,
   });
-
-  console.log("Selected reviewers:", selectedReviewers);
 
   // Determine reviewers to add and remove
   const reviewersToAdd = selectedReviewers.filter(
@@ -74,29 +77,19 @@ export async function assign(octokit) {
     (r) => !selectedReviewers.includes(r)
   );
 
-  // TODO: get owner and repo from config
-  const owner = "nplan-io";
-  const repo = "core";
-
   // TODO: test this with a real PR
-  // Add reviewers
   if (reviewersToAdd.length > 0) {
-    await octokit.pulls.requestReviewers({
-      owner,
-      repo,
-      pull_number: pr.number,
+    await addReviewersToPullRequest(octokit, {
+      prNumber: pr.number,
       reviewers: reviewersToAdd,
     });
     console.log(`Requested reviews from: ${reviewersToAdd.join(", ")}`);
   }
 
   // TODO: test this with a real PR
-  // Remove reviewers
   if (reviewersToRemove.length > 0) {
-    await octokit.pulls.removeRequestedReviewers({
-      owner,
-      repo,
-      pull_number: pr.number,
+    await removeReviewersFromPullRequest(octokit, {
+      prNumber: pr.number,
       reviewers: reviewersToRemove,
     });
     console.log(

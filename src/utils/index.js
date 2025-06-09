@@ -1,2 +1,2 @@
-export { getConfig } from "./getConfig.js";
-export { getCurrentBranch } from "./git.js";
+export { getConfig, saveConfig, updateConfig } from "./config.js";
+export { buildHead, getCurrentBranch } from "./git.js";

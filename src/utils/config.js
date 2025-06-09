@@ -15,3 +15,19 @@ export function getConfig() {
     throw new Error(`Invalid configuration file: ${error.message}`);
   }
 }
+
+export function saveConfig(config) {
+  try {
+    fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
+  } catch (error) {
+    throw new Error(`Failed to save configuration: ${error.message}`);
+  }
+}
+
+// TODO: test this function doesn't overwrite existing config
+export function updateConfig(updates) {
+  const config = getConfig();
+  Object.assign(config, updates);
+  saveConfig(config);
+  return config;
+}

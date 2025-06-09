@@ -13,3 +13,8 @@ export function getCurrentBranch() {
     throw new Error("Failed to get current git branch. Are you in a git repo?");
   }
 }
+
+export function buildHead(branch) {
+  const owner = "nplan-io"; // TODO: get owner from config
+  return `${owner}:${branch}`;
+}

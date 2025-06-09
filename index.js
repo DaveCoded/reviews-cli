@@ -1,9 +1,10 @@
 #! /usr/bin/env node
 
+// TODO: move file to bin
 import { Octokit } from "@octokit/rest";
 import { assign, configure, list } from "./src/commands/index.js";
 import { validateConfig, validateCommand } from "./src/lib/index.js";
-import { getConfig } from "./src/utils/getConfig.js";
+import { getConfig } from "./src/utils/index.js";
 
 const commands = {
   assign,
