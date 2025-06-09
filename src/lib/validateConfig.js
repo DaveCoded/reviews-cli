@@ -4,7 +4,7 @@ import { CONFIG_PATH } from "../constants.js";
 export function validateConfig() {
   if (!fs.existsSync(CONFIG_PATH)) {
     console.error(
-      "No config found. Run `reviews configure` to set up your GitHub token."
+      "No config found. Run `reviews login` to set up your GitHub token."
     );
     process.exit(1);
   }
@@ -13,7 +13,7 @@ export function validateConfig() {
 
   if (!config.githubToken) {
     console.error(
-      "No GitHub token found. Run `reviews configure` to set up your GitHub token."
+      "No GitHub token found. Run `reviews login` to set up your GitHub token."
     );
     process.exit(1);
   }

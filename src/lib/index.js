@@ -5,10 +5,11 @@ export {
   getAllReviewsByPullRequests,
   getOpenReviewRequestsForMembers,
 } from "./pullRequestReviews.js";
-export { getPullRequests } from "./pullRequests.js";
+export { getPullRequests, selectPR } from "./pullRequests.js";
 export {
   addReviewersToPullRequest,
   removeReviewersFromPullRequest,
+  selectReviewers,
 } from "./reviewers.js";
 export { validateCommand } from "./validateCommand.js";
 export { validateConfig } from "./validateConfig.js";

@@ -4,7 +4,7 @@ import { CONFIG_PATH } from "../constants.js";
 export function getConfig() {
   if (!fs.existsSync(CONFIG_PATH)) {
     throw new Error(
-      `Configuration file not found at ${CONFIG_PATH}. Please run 'reviews configure' first.`
+      `Configuration file not found at ${CONFIG_PATH}. Please run 'reviews login' first.`
     );
   }
 
