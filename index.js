@@ -2,12 +2,13 @@
 
 // TODO: move file to bin
 import { Octokit } from "@octokit/rest";
-import { assign, login, list } from "./src/commands/index.js";
+import { assign, configure, login, list } from "./src/commands/index.js";
 import { validateConfig, validateCommand } from "./src/lib/index.js";
 import { getConfig } from "./src/utils/index.js";
 
 const commands = {
   assign,
+  configure,
   login,
   list,
 };
@@ -17,8 +18,7 @@ const command = process.argv[2];
 validateCommand({ command, commands });
 
 if (command === "login") {
-  commands[command]();
-  process.exit(0);
+  await commands[command]();
 }
 
 validateConfig();

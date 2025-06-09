@@ -31,3 +31,26 @@ export function updateConfig(updates) {
   saveConfig(config);
   return config;
 }
+
+export function createConfig(initialConfig) {
+  if (fs.existsSync(CONFIG_PATH)) {
+    throw new Error(
+      `Configuration file already exists at ${CONFIG_PATH}. Please run 'reviews configure' to update it.`
+    );
+  }
+
+  fs.mkdirSync(CONFIG_DIR, { recursive: true });
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(initialConfig ?? {}, null, 2));
+  console.log("Configuration created successfully.");
+}
+
+export function deleteConfig() {
+  if (fs.existsSync(CONFIG_PATH)) {
+    fs.unlinkSync(CONFIG_PATH);
+    console.log("Configuration deleted successfully.");
+  } else {
+    console.log(
+      `Configuration file not found at ${CONFIG_PATH}. Nothing to delete.`
+    );
+  }
+}
