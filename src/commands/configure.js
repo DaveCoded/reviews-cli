@@ -15,20 +15,20 @@ export async function configure(octokit) {
 
   const owner = await input({
     message: "Configure the repository owner:",
-    initial: configuredOwner ?? "",
+    default: configuredOwner ?? "",
     required: true,
   });
 
   const repo = await input({
     message: "Configure the repository name:",
-    initial: configuredRepo ?? "",
+    default: configuredRepo ?? "",
     required: true,
   });
 
   let favouriteReviewers = configuredReviewers;
 
   try {
-    const members = await getMembers(octokit);
+    const members = await getMembers(octokit, { owner });
     const me = await getMe(octokit);
     const choices = members
       .filter((member) => member.login !== me.login)

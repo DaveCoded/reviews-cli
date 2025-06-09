@@ -29,25 +29,13 @@ export function calculateOpenReviewRequests({ orgMembers, prReviewsList }) {
     reviewCounts[member.login] = 0;
   }
 
-  for (const { pr, reviews } of prReviewsList) {
+  for (const { pr } of prReviewsList) {
     const requestedReviewers = pr.requested_reviewers
       .filter((r) => orgLogins.has(r.login))
       .map((r) => r.login);
 
-    if (requestedReviewers.length === 0) continue;
-
-    // For each requested reviewer, check if they have approved
     for (const reviewer of requestedReviewers) {
-      const hasApproved = reviews.some(
-        (review) =>
-          review.user &&
-          review.user.login === reviewer &&
-          review.state === "APPROVED"
-      );
-
-      if (!hasApproved) {
-        reviewCounts[reviewer] += 1;
-      }
+      reviewCounts[reviewer] += 1;
     }
   }
 
