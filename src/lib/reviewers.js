@@ -1,15 +1,26 @@
 import { checkbox } from "@inquirer/prompts";
 import { getMe } from "./me.js";
+import { getConfig } from "../utils/index.js";
 
 export async function addReviewersToPullRequest(
   octokit,
   { prNumber, reviewers }
 ) {
+  const config = getConfig();
+
+  if (!config.owner || !config.repo) {
+    console.error(
+      "No owner or repo configured. Run `reviews configure` to set the owner and repo."
+    );
+    process.exit(1);
+  }
+
+  const { owner, repo } = config;
+
   try {
     return await octokit.pulls.requestReviewers({
-      // TODO: get owner and repo from config
-      owner: "nplan-io",
-      repo: "core",
+      owner,
+      repo,
       pull_number: prNumber,
       reviewers,
     });
@@ -23,11 +34,21 @@ export async function removeReviewersFromPullRequest(
   octokit,
   { prNumber, reviewers }
 ) {
+  const config = getConfig();
+
+  if (!config.owner || !config.repo) {
+    console.error(
+      "No owner or repo configured. Run `reviews configure` to set the owner and repo."
+    );
+    process.exit(1);
+  }
+
+  const { owner, repo } = config;
+
   try {
     return await octokit.pulls.removeRequestedReviewers({
-      // TODO: get owner and repo from config
-      owner: "nplan-io",
-      repo: "core",
+      owner,
+      repo,
       pull_number: prNumber,
       reviewers,
     });

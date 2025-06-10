@@ -9,7 +9,7 @@
   "license": "ISC",
   "description": "",
   "bin": {
-    "reviews": "./index.js"
+    "reviews": "./bin/index.js"
   },
   "type": "module",
   "devDependencies": {

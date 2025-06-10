@@ -1,11 +1,21 @@
 import { select } from "@inquirer/prompts";
+import { getConfig } from "../utils/index.js";
 
-// TODO: get owner and repo from config
 export async function getPullRequests(octokit, options = {}) {
+  const config = getConfig();
+  if (!config.owner || !config.repo) {
+    console.log(
+      "No owner or repo configured. Run `reviews configure` to set them."
+    );
+    process.exit(0);
+  }
+
+  const { owner, repo } = config;
+
   try {
     return octokit.pulls.list({
-      owner: "nplan-io",
-      repo: "core",
+      owner,
+      repo,
       state: "open",
       per_page: 100,
       ...options,

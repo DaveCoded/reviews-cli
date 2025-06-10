@@ -1,14 +1,25 @@
+import { getConfig } from "../utils/index.js";
 import { getMembers } from "./members.js";
 import { getPullRequests } from "./pullRequests.js";
 
-// TODO: get owner and repo from config
 async function getReviewsByPullRequest(octokit, pullNumber) {
+  const config = getConfig();
+  if (!config.owner || !config.repo) {
+    console.log(
+      "No owner or repo configured. Run `reviews configure` to set them."
+    );
+    process.exit(0);
+  }
+
+  const { owner, repo } = config;
+
   const { data: reviews } = await octokit.pulls.listReviews({
-    owner: "nplan-io",
-    repo: "core",
+    owner,
+    repo,
     pull_number: pullNumber,
     per_page: 100,
   });
+
   return reviews;
 }
 
@@ -42,6 +53,31 @@ export function calculateOpenReviewRequests({ orgMembers, prReviewsList }) {
   return reviewCounts;
 }
 
+function orderCountsByFavouriteReviewers(reviewCounts) {
+  const config = getConfig();
+  const favouriteReviewers = config.favouriteReviewers || [];
+  const orderedReviewCounts = {};
+
+  // Add favourite reviewers first, if present in reviewCounts
+  for (const reviewer of favouriteReviewers) {
+    if (reviewCounts[reviewer] !== undefined) {
+      orderedReviewCounts[reviewer] = reviewCounts[reviewer];
+    }
+  }
+
+  // Add remaining reviewers not already added
+  for (const reviewer in reviewCounts) {
+    if (
+      reviewCounts.hasOwnProperty(reviewer) &&
+      !orderedReviewCounts.hasOwnProperty(reviewer)
+    ) {
+      orderedReviewCounts[reviewer] = reviewCounts[reviewer];
+    }
+  }
+
+  return orderedReviewCounts;
+}
+
 export async function getOpenReviewRequestsForMembers(octokit) {
   const orgMembers = await getMembers(octokit);
   const { data: prs } = await getPullRequests(octokit);
@@ -52,5 +88,7 @@ export async function getOpenReviewRequestsForMembers(octokit) {
     prReviewsList,
   });
 
-  return reviewCounts;
+  const orderedReviewCounts = orderCountsByFavouriteReviewers(reviewCounts);
+
+  return orderedReviewCounts;
 }

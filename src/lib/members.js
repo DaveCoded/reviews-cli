@@ -1,7 +1,7 @@
 import { getConfig } from "../utils/index.js";
 
 // TODO: cache org members because they don't change often
-export async function getMembers(octokit, { owner }) {
+export async function getMembers(octokit, { owner } = {}) {
   const config = getConfig();
 
   if (!owner && !config.owner) {

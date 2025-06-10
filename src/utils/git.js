@@ -1,4 +1,5 @@
 import { execSync } from "child_process";
+import { getConfig } from "./config.js";
 
 /**
  * Returns the name of the currently checked out git branch.
@@ -15,6 +16,14 @@ export function getCurrentBranch() {
 }
 
 export function buildHead(branch) {
-  const owner = "nplan-io"; // TODO: get owner from config
-  return `${owner}:${branch}`;
+  const config = getConfig();
+
+  if (!config.owner) {
+    console.log(
+      "No owner configured. Run `reviews configure` to set the owner."
+    );
+    process.exit(0);
+  }
+
+  return `${config.owner}:${branch}`;
 }

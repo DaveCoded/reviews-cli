@@ -1,6 +1,8 @@
-// First ask for owner. Populate with config by default.
-// Then ask for repo. Populate with config by default.
-// Then configure favourite reviewers.
+/*
+ * reviews configure: choose something to configure
+ * reviews configure --owner <owner> --repo <repo> --favourites <favourites>
+ * <favourites> is a comma-separated list of GitHub usernames
+ */
 
 import { checkbox, input } from "@inquirer/prompts";
 import { getMe, getMembers } from "../lib/index.js";
@@ -39,7 +41,7 @@ export async function configure(octokit) {
       }));
 
     favouriteReviewers = await checkbox({
-      message: "Choose your favourite reviewers (comma-separated):",
+      message: "Choose your favourite reviewers:",
       choices,
     });
   } catch (error) {
