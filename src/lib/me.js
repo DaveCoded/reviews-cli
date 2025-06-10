@@ -1,9 +1,9 @@
 import { getConfig, saveConfig } from "../utils/index.js";
 
-const config = getConfig();
-
 export async function getMe(octokit) {
-  if (config.me) {
+  const config = getConfig();
+
+  if (config?.me) {
     return config.me;
   }
 

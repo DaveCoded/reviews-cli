@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { CONFIG_PATH } from "../constants.js";
+import { CONFIG_DIR, CONFIG_PATH } from "../constants.js";
 
 export function getConfig() {
   if (!fs.existsSync(CONFIG_PATH)) {

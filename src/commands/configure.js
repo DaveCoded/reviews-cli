@@ -8,9 +8,9 @@ import { checkbox, input } from "@inquirer/prompts";
 import { getMe, getMembers } from "../lib/index.js";
 import { getConfig, updateConfig } from "../utils/index.js";
 
-const config = getConfig();
-
 export async function configure(octokit) {
+  const config = getConfig();
+
   const configuredOwner = config.owner;
   const configuredRepo = config.repo;
   const configuredReviewers = config.favouriteReviewers || [];

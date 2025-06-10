@@ -21,7 +21,7 @@ export async function login() {
     config = getConfig();
   }
 
-  if (config.githubToken) {
+  if (config?.githubToken) {
     const overwrite = await confirm({
       message:
         "You are already logged in. Do you want to overwrite your token?",
@@ -46,7 +46,7 @@ export async function login() {
       transformer: (input) => input.replace(/./g, "*"),
     });
 
-    if (config.githubToken) {
+    if (config?.githubToken) {
       config.githubToken = token;
       updateConfig(config);
     } else {
@@ -54,8 +54,6 @@ export async function login() {
         githubToken: token,
       });
     }
-
-    console.log("Configuration saved in ~/.reviews/config.json");
   } catch (err) {
     if (err && err.name === "ExitPromptError") {
       console.log("Login cancelled by user.");
