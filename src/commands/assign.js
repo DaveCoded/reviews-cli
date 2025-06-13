@@ -8,7 +8,6 @@ import {
 } from "../lib/index.js";
 import { buildHead, formatList, getCurrentBranch } from "../utils/index.js";
 
-// TODO: testing
 export async function assign(octokit) {
   const currentBranch = getCurrentBranch();
 
@@ -24,6 +23,7 @@ export async function assign(octokit) {
   const pr = await selectPR(prs);
 
   const reviewCounts = await getOpenReviewRequestsForMembers(octokit);
+  const currentReviewers = pr.requested_reviewers.map((r) => r.login);
 
   const selectedReviewers = await selectReviewers(octokit, {
     reviewCounts,
@@ -38,7 +38,6 @@ export async function assign(octokit) {
     (r) => !selectedReviewers.includes(r)
   );
 
-  // TODO: test this with a real PR
   if (reviewersToAdd.length > 0) {
     await addReviewersToPullRequest(octokit, {
       prNumber: pr.number,
@@ -47,7 +46,6 @@ export async function assign(octokit) {
     console.log(`Requested reviews from: ${formatList(reviewersToAdd)}`);
   }
 
-  // TODO: test this with a real PR
   if (reviewersToRemove.length > 0) {
     await removeReviewersFromPullRequest(octokit, {
       prNumber: pr.number,
