@@ -1,5 +1,5 @@
 {
-  "name": "reviews-cli",
+  "name": "@dave-bernhard/reviews-cli",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Dave Bernhard",

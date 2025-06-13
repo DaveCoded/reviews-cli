@@ -7,7 +7,7 @@ A command-line tool to help manage GitHub pull request reviews and reviewer assi
 This tool requires Node. Only tested on v20 and v22, but v18 probably works too.
 
 ```bash
-npm install -g @DaveCoded/reviews-cli
+npm install -g @dave-bernhard/reviews-cli
 ```
 
 ## Usage
